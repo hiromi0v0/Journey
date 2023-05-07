@@ -131,3 +131,14 @@ STATICFILES_DIRS=(os.path.join(BASE_DIR,'static'),)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL='accounts.CustomUser'
+
+
+# P412 passwordを設定するメール
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+
+DEFAULT_FROM_EMAIL='maru0v0python@gmail.com'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_HOST_USER='maru0v0python@gmail.com'
+EMAIL_HOST_PASSWORD='pceabcxatscncmru'
+EMAIL_USE_TLS=True
