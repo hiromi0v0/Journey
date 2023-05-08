@@ -142,3 +142,7 @@ EMAIL_PORT=587
 EMAIL_HOST_USER='maru0v0python@gmail.com'
 EMAIL_HOST_PASSWORD='pceabcxatscncmru'
 EMAIL_USE_TLS=True
+
+# P428 mediaの場所指定
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'
