@@ -42,7 +42,7 @@ class Attribute(models.Model):
 
 
     def __str__(self):
-        return self.happy
+        return f"ストレス：{self.stress}/ハッピー：{self.happy}"
 
 
 
