@@ -1,17 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views.generic import TemplateView,ListView
 # from django.core.paginator import Paginator
 
 # # 写真投稿ページ系
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .forms import PhotoPostForm
+from .forms import PhotoPostForm,AttributeForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 # # ------------トップページ写真投稿
-# from .models import PhotoPost
+from .models import PhotoPost
 # # ------------詳細ページ
-# from django.views.generic import DetailView,UpdateView
+from django.views.generic import DetailView,UpdateView
 # # ページを削除する
 # from django.views.generic import DeleteView
 
@@ -34,18 +34,49 @@ class IndexView(TemplateView):
     template_name='index.html'
 
 
-@method_decorator(login_required,name='dispatch')
-class CreatePhotoView(CreateView):
+# ユーザーの投稿ページ
+# @method_decorator(login_required,name='dispatch')
+# class CreatePhotoView(CreateView):
 
-    form_class=PhotoPostForm
-    template_name="post_photo.html"
-    success_url=reverse_lazy('photo:post_done')
+#     form_class=PhotoPostForm
+#     template_name="post_photo.html"
+#     success_url=reverse_lazy('photo:post_done')
 
-    def form_valid(self, form):
-        postdata=form.save(commit=False)
-        postdata.user=self.request.user
-        postdata.save()
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         postdata=form.save(commit=False)
+#         postdata.user=self.request.user
+#         postdata.save()
+#         return super().form_valid(form)
+
+def create_photo_view(request):
+    if request.method == 'POST':
+
+        photo_post_form = PhotoPostForm(request.POST,request.FILES)
+        attribute_form = AttributeForm(request.POST)
+
+        forms = (photo_post_form, attribute_form)
+
+        if photo_post_form.is_valid() and attribute_form.is_valid:
+            attribute = attribute_form.save()
+
+            photo_post = photo_post_form.save(commit=False)
+            photo_post.attribute = attribute
+            attribute.photo_post.save()
+
+            return redirect(to='/')
+
+    else:
+        forms = (PhotoPostForm(), AttributeForm())
+
+    param = {
+        'forms': forms
+    }
+
+    return render(request, 'post_photo.html', param)
+
+
+
+
 
 
 @method_decorator(login_required,name='dispatch')
@@ -53,50 +84,52 @@ class PostSuccessView(TemplateView):
     template_name='post_success.html'
 
 # # 写真投稿一覧表示
-# class IndexView(ListView):
-#     template_name='index.html'
-#     queryset=PhotoPost.objects.order_by('posted_at')
-
-#     paginate_by=9
-
-# class CategoryView(ListView):
-#     template_name='index.html'
-#     paginate_by=9
-
-#     def get_queryset(self):
-#         category_id=self.kwargs['category']
-#         categories=PhotoPost.objects.filter(category=category_id).order_by('-posted_at')
-
-#         return categories
+class IndexView(ListView):
+    template_name='index.html'
+    queryset=PhotoPost.objects.order_by('posted_at')
 
 
-# class UserView(ListView):
-#     template_name='index.html'
-#     paginate_by=9
+# ページネーション
+    paginate_by=9
 
-#     def get_queryset(self):
+class CountryView(ListView):
+    template_name='index.html'
+    paginate_by=9
 
-#         user_id=self.kwargs['user']
-#         user_list=PhotoPost.objects.filter(user=user_id).order_by('-posted_at')
+    def get_queryset(self):
+        country_id=self.kwargs['country']
+        countrys=PhotoPost.objects.filter(country=country_id).order_by('-posted_at')
 
-#         return user_list
+        return countrys
+
+
+class UserView(ListView):
+    template_name='index.html'
+    paginate_by=9
+
+    def get_queryset(self):
+
+        user_id=self.kwargs['user']
+        user_list=PhotoPost.objects.filter(user=user_id).order_by('-posted_at')
+
+        return user_list
 
 
 # # ------------詳細ページ作成
-# class DetailView(DetailView):
-#     template_name='detail.html'
-#     model=PhotoPost
+class DetailView(DetailView):
+    template_name='detail.html'
+    model=PhotoPost
 
 # # マイページを用意する
 
-# class MypageView(ListView):
-#     template_name='mypage.html'
-#     paginate_by=9
+class MypageView(ListView):
+    template_name='mypage.html'
+    paginate_by=9
 
-#     def get_queryset(self):
-#         queryset=PhotoPost.objects.filter(user=self.request.user).order_by('posted_at')
+    def get_queryset(self):
+        queryset=PhotoPost.objects.filter(user=self.request.user).order_by('posted_at')
 
-#         return queryset
+        return queryset
 
 # # ページを削除する
 # class PhotoDeleteView(DeleteView):

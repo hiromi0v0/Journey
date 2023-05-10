@@ -42,7 +42,7 @@ class Attribute(models.Model):
 
 
     def __str__(self):
-        return f"ストレス：{self.stress}/ハッピー：{self.happy}"
+        return f"{self.country}/ストレス：{self.stress}/ハッピー：{self.happy}/エネルギー：{self.energy}"
 
 
 

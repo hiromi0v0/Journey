@@ -11,6 +11,13 @@
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table>
+                        {% for form in forms %}
+                            {{ form.as_table }}
+                        {% endfor %}
+                    </table>
+
+                    {% comment %}
+                    <table>
                         <tr>
                             <th>国</th>
                             <td>{{form.country}}</td>
@@ -53,9 +60,10 @@
                         </tr>
                         <tr>
                             <th>気分・目的</th>
-                            <td>{{form.attribute}}～{{form.attribute}}</td>
+                            <td>{{form.stress}}</td>
                         </tr>
                     </table>
+                    {% endcomment %}
                     <hr>
                     <button type="submit">投稿する</button>
                 </form>
