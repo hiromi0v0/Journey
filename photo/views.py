@@ -1,15 +1,15 @@
 from django.shortcuts import render,redirect
-from django.views.generic import TemplateView,ListView
+from django.views.generic import TemplateView,ListView,FormView
 # from django.core.paginator import Paginator
 
 # # 写真投稿ページ系
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .forms import PhotoPostForm,AttributeForm
+from .forms import PhotoPostForm,AttributeForm,ReligionForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 # # ------------トップページ写真投稿
-from .models import PhotoPost
+from .models import PhotoPost,Attribute,Country
 # # ------------詳細ページ
 from django.views.generic import DetailView,UpdateView
 # # ページを削除する
@@ -27,11 +27,37 @@ from django.views.generic import DetailView,UpdateView
 # #################################################################################
 #                                 #クラス
 # #################################################################################
-
-# # トップページ
+# 診断トップページ
 class IndexView(TemplateView):
 
     template_name='index.html'
+
+
+#   宗教。言語選択ページ-----------------------------------------
+class ReligionView(FormView):
+
+    template_name='religion.html'
+    success_url=reverse_lazy('photo:mypage')
+    form_class=ReligionForm
+
+
+
+
+
+# purposeの選択ページ-----------------------------------------
+class PurposeView(ListView):
+
+    model = Attribute
+    template_name='purpose.html'
+# context_object_nameはテンプレートで表示する際のモデルの参照名
+    context_object_name = 'attributes'
+
+
+
+# # トップページ
+# class IndexView(TemplateView):
+
+#     template_name='index.html'
 
 
 # ユーザーの投稿ページ

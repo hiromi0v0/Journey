@@ -5,9 +5,19 @@ from .import views
 app_name='photo'
 
 urlpatterns=[
-    ####################################クラス用#########################################
-
+####################################クラス用#########################################
+# 診断アプリのトップページ
     path('',views.IndexView.as_view(),name='index'),
+
+# situationの選択ページ
+    path('situation',views.SituationView.as_view(),name='situation'),
+
+# purposeの選択ページ
+    path('purpose',views.PurposeView.as_view(),name='purpose'),
+
+
+    # photopostのトップページ
+    # path('',views.IndexView.as_view(),name='index'),
     # Formを二つ作ったので、関数で書いた
     path('post/',views.create_photo_view,name='post'),
     path('post_done/',views.PostSuccessView.as_view(),name='post_done'),
