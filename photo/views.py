@@ -57,11 +57,14 @@ def create_photo_view(request):
         forms = (photo_post_form, attribute_form)
 
         if photo_post_form.is_valid() and attribute_form.is_valid:
-            attribute = attribute_form.save()
+            attribute = attribute_form.save(commit=False)
+            attribute.country = photo_post_form.cleaned_data['country']
+            attribute.save()
 
             photo_post = photo_post_form.save(commit=False)
             photo_post.attribute = attribute
-            attribute.photo_post.save()
+            photo_post.user = request.user  # ユーザーを設定
+            photo_post.save()
 
             return redirect(to='/')
 
@@ -118,7 +121,7 @@ class UserView(ListView):
 # # ------------詳細ページ作成
 class DetailView(DetailView):
     template_name='detail.html'
-    model=PhotoPost
+    model=PhotoPost,
 
 # # マイページを用意する
 
