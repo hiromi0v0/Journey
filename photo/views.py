@@ -33,17 +33,6 @@ class IndexView(TemplateView):
     template_name='index.html'
 
 
-#   宗教。言語選択ページ-----------------------------------------
-class ReligionView(FormView):
-
-    template_name='religion.html'
-    success_url=reverse_lazy('photo:mypage')
-    form_class=ReligionForm
-
-
-
-
-
 # purposeの選択ページ-----------------------------------------
 class PurposeView(ListView):
 
@@ -51,6 +40,15 @@ class PurposeView(ListView):
     template_name='purpose.html'
 # context_object_nameはテンプレートで表示する際のモデルの参照名
     context_object_name = 'attributes'
+
+
+
+#   宗教、言語選択ページ
+# class ReligionView(FormView):
+
+#     template_name='religion.html'
+#     success_url=reverse_lazy('photo:purpose')
+#     form_class=ReligionForm
 
 
 
@@ -74,6 +72,8 @@ class PurposeView(ListView):
 #         postdata.save()
 #         return super().form_valid(form)
 
+
+# 写真投稿ページ
 def create_photo_view(request):
     if request.method == 'POST':
 
