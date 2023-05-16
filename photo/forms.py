@@ -62,28 +62,38 @@ class ReligionForm(forms.Form):
         widget=forms.widgets.Select
     )
 
-class JudgeForm(forms.Form):
 
-    religion=forms.fields.ChoiceField(
-        choices = (
-            ('stress', 'ストレス'),
-            ('happy', 'ハッピー'),
-            ('energy', 'エネルギー'),
-            ('astray', '人生迷子'),
-            ('tired', '疲労度'),
-            ('adventure', '冒険'),
-            ('nature', '自然'),
-            ('architecture', '建物'),
-            ('healing', '癒し'),
-            ('instagram', 'インスタ映え'),
-            ('girls', '女子旅'),
-            ('food', '食事'),
-            ('art', '芸術'),
+# 状況を選ぶフォーム
+class SituationForm(forms.Form):
+    JUDGE = (('zero', '0'),
+        ('one', '1'),
+        ('two', '2'),
+        ('three', '3'),
+        ('four', '4'),
+        ('five', '5'))
+    
+    
+    stress=forms.ChoiceField(label='ストレス度',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    happy=forms.ChoiceField(label='ハッピー度',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    energy=forms.ChoiceField(label='エネルギーがある',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    astray=forms.ChoiceField(label='人生迷子度',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    tired=forms.ChoiceField(label='疲労度',choices=JUDGE,widget=forms.widgets.RadioSelect)
 
 
-        ),
-
-        required=True,
-        widget=forms.widgets.Select
-    )
-
+# 興味を選ぶフォーム
+class InterestForm(forms.Form):
+    JUDGE = (('zero', '0'),
+        ('one', '1'),
+        ('two', '2'),
+        ('three', '3'),
+        ('four', '4'),
+        ('five', '5'))
+    
+    adventure=forms.ChoiceField(label='冒険',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    nature=forms.ChoiceField(label='自然',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    architecture=forms.ChoiceField(label='建物',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    healing=forms.ChoiceField(label='癒し',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    instagram=forms.ChoiceField(label='インスタ映え',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    girls=forms.ChoiceField(label='女子旅',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    food=forms.ChoiceField(label='食事',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    art=forms.ChoiceField(label='芸術',choices=JUDGE,widget=forms.widgets.RadioSelect)

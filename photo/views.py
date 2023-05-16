@@ -1,11 +1,11 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponseRedirect
 from django.views.generic import TemplateView,ListView,FormView
 # from django.core.paginator import Paginator
 
 # # 写真投稿ページ系
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .forms import PhotoPostForm,AttributeForm,ReligionForm
+from .forms import PhotoPostForm,AttributeForm,SituationForm,InterestForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 # # ------------トップページ写真投稿
@@ -33,14 +33,32 @@ class IndexView(TemplateView):
     template_name='index.html'
 
 
-# purposeの選択ページ-----------------------------------------
-class PurposeView(ListView):
+# -----------------------------situation：状況の選択ページ---------------------------------
+def situation(request):
+    if request.method == 'POST':
+        form = SituationForm(request.POST)
+        if form.is_valid():
+# フォームの入力値を取得して何らかの処理を行う
 
-    model = Attribute
-    template_name='purpose.html'
-# context_object_nameはテンプレートで表示する際のモデルの参照名
-    context_object_name = 'attributes'
+# 入力内容に問題がなければ、次のページに飛ぶよ
+            return HttpResponseRedirect('/interest/')
+    else:
+        form = SituationForm()
+    return render(request, 'situation.html', {'form': form})
 
+
+# -----------------------------interest:興味の選択ページ---------------------------------
+def interest(request):
+    if request.method == 'POST':
+        form = InterestForm(request.POST)
+        if form.is_valid():
+# フォームの入力値を取得して何らかの処理を行う
+
+# 入力内容に問題がなければ、次のページに飛ぶよ
+            return HttpResponseRedirect('/situation/')
+    else:
+        form = InterestForm()
+    return render(request, 'interest.html', {'form': form})
 
 
 #   宗教、言語選択ページ

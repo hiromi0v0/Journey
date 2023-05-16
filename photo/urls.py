@@ -9,15 +9,12 @@ urlpatterns=[
 # 診断アプリのトップページ
     path('',views.IndexView.as_view(),name='index'),
 
-# 宗教の選択ページ
-    path('religion',views.ReligionView.as_view(),name='religion'),
+# situation：状況の選択ページ
+path('situation/', views.situation, name='situation'),
 
 
-# situationの選択ページ
-    # path('situation',views.SituationView.as_view(),name='situation'),
-
-# purposeの選択ページ
-    path('purpose',views.PurposeView.as_view(),name='purpose'),
+# purpose:目的の選択ページ
+path('interest/', views.interest, name='interest'),
 
 
     # photopostのトップページ
