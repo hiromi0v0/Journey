@@ -8,13 +8,13 @@
     <section class="py-5 text-center container">
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-light">Religion</h1>
+            <h1 class="fw-light">Language</h1>
 
             <p class="lead text-muted">興味のある言語を選んでください。</p>
 
             <form method="post">
               {% csrf_token %}
-              {% for radio in form.religion %}
+              {% for radio in form.language %}
                 <button type="submit" class="btn btn-primary btn-lg mb-2" name="{{ radio.name }}" value="{{ radio.choice_value }}" style="padding: 10px 20px;">
                   {{ radio.choice_label }}
                 </button>

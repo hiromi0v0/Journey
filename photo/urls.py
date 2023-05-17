@@ -17,6 +17,14 @@ path('situation/', views.situation, name='situation'),
 path('interest/', views.interest, name='interest'),
 
 
+#language:言語の選択ページ
+path('language/', views.language, name='language'),
+
+
+# religion:宗教の選択ページ
+path('religion/', views.religion, name='religion'),
+
+
     # photopostのトップページ
     # path('',views.IndexView.as_view(),name='index'),
     # Formを二つ作ったので、関数で書いた

@@ -5,7 +5,7 @@ from django.views.generic import TemplateView,ListView,FormView
 # # 写真投稿ページ系
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .forms import PhotoPostForm,AttributeForm,SituationForm,InterestForm
+from .forms import PhotoPostForm,AttributeForm,SituationForm,InterestForm,ReligionForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 # # ------------トップページ写真投稿
@@ -52,22 +52,38 @@ def interest(request):
     if request.method == 'POST':
         form = InterestForm(request.POST)
         if form.is_valid():
-# フォームの入力値を取得して何らかの処理を行う
 
 # 入力内容に問題がなければ、次のページに飛ぶよ
-            return HttpResponseRedirect('/situation/')
+            return HttpResponseRedirect('/language/')
     else:
         form = InterestForm()
     return render(request, 'interest.html', {'form': form})
 
 
-#   宗教、言語選択ページ
-# class ReligionView(FormView):
+#----------------------------宗教、言語選択ページ---------------------------------
+def language(request):
+    if request.method == 'POST':
+        form = ReligionForm(request.POST)
+        if form.is_valid():
 
-#     template_name='religion.html'
-#     success_url=reverse_lazy('photo:purpose')
-#     form_class=ReligionForm
+# 入力内容に問題がなければ、次のページに飛ぶよ
+            return HttpResponseRedirect('/religion/')
+    else:
+        form = ReligionForm()
+    return render(request, 'language.html', {'form': form})
 
+
+#----------------------------宗教選択ページ---------------------------------
+def religion(request):
+    if request.method == 'POST':
+        form = ReligionForm(request.POST)
+        if form.is_valid():
+
+# 入力内容に問題がなければ、次のページに飛ぶよ
+            return HttpResponseRedirect('/religion/')
+    else:
+        form = ReligionForm()
+    return render(request, 'religion.html', {'form': form})
 
 
 # # トップページ
