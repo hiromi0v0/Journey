@@ -7,7 +7,7 @@ app_name='photo'
 urlpatterns=[
 ####################################クラス用#########################################
 # 診断アプリのトップページ
-    path('',views.IndexView.as_view(),name='index'),
+path('',views.IndexView.as_view(),name='index'),
 
 # situation：状況の選択ページ
 path('situation/', views.situation, name='situation'),
@@ -23,6 +23,9 @@ path('language/', views.language, name='language'),
 
 # religion:宗教の選択ページ
 path('religion/', views.religion, name='religion'),
+
+# 結果表示ページ
+path('recommend/',views.recommend,name='recommend'),
 
 
     # photopostのトップページ

@@ -1,29 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}Photo Gallery{% endblock %}
+{% block title %}Religion{% endblock %}
 
-{%block contents%}
+{% block contents %}
 <main>
-
     <section class="py-5 text-center container">
         <div class="row py-lg-5">
-          <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-light">Religion</h1>
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Religion</h1>
+                <p class="lead text-muted">興味のある宗教を選んでください。</p>
 
-            <p class="lead text-muted">興味のある言語を選んでください。</p>
-
-            <form method="post">
-              {% csrf_token %}
-              {% for radio in form.religion %}
-                <button type="submit" class="btn btn-primary btn-lg mb-2" name="{{ radio.name }}" value="{{ radio.choice_value }}" style="padding: 10px 20px;">
-                  {{ radio.choice_label }}
-                </button>
-              {% endfor %}
-            </form>
-
-          </div>
+                <form method="post" action="{% url 'photo:recommend' %}">
+                    {% csrf_token %}
+                    {% for radio in form.religion %}
+                    <button type="submit" class="btn btn-primary btn-lg mb-2" name="{{ radio.name }}" value="{{ radio.choice_value }}" style="padding: 10px 20px;">
+                        {{ radio.choice_label }}
+                    </button>
+                    {% endfor %}
+                </form>
+            </div>
         </div>
     </section>
-
 </main>
 {% endblock %}

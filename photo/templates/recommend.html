@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
-{% block title %}Language{% endblock %}
+{% block title %}Recommend{% endblock %}
 
 {% block contents %}
 <main>
     <section class="py-5 text-center container">
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">Language</h1>
-                <p class="lead text-muted">興味のある言語を選んでください。</p>
+                <h1 class="fw-light">Recommend</h1>
+                <p class="lead text-muted">あなたにオススメの旅行先は、</p>
 
-                <form method="post" action="{% url 'photo:religion' %}">
+                <form method="post" action="{% url 'photo:recommend' %}">
                     {% csrf_token %}
-                    {% for radio in form.language %}
+                    {% for radio in form.religion %}
                     <button type="submit" class="btn btn-primary btn-lg mb-2" name="{{ radio.name }}" value="{{ radio.choice_value }}" style="padding: 10px 20px;">
                         {{ radio.choice_label }}
                     </button>

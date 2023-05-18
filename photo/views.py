@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,HttpResponseRedirect
+from django.shortcuts import render,redirect
 from django.views.generic import TemplateView,ListView,FormView
 # from django.core.paginator import Paginator
 
@@ -37,77 +37,90 @@ class IndexView(TemplateView):
 def situation(request):
     if request.method == 'POST':
         form = SituationForm(request.POST)
+# もし入力内容がOKだったら
         if form.is_valid():
-# フォームの入力値を取得して何らかの処理を行う
+
+
+# 各項目のデータをセッションに保存する！
+# セッションにデータ（文字列・値）を入れる場合の構文：
+# request.session['セッション名'] = データ
+# まず、formの各項目をfor文でfield_nameに一つずつ入れて、セッションに保存する。
+            for field_name in ['stress', 'happy', 'energy', 'astray', 'tired']:
+                request.session['attribute'][field_name] = int(form.cleaned_data[field_name])
+# セッションの内容が保存できているかprintして確認する。
+            print(request.session['energy'])
 
 # 入力内容に問題がなければ、次のページに飛ぶよ
-            return HttpResponseRedirect('/interest/')
+            return redirect('photo:interest')
     else:
         form = SituationForm()
     return render(request, 'situation.html', {'form': form})
 
 
-# -----------------------------interest:興味の選択ページ---------------------------------
+# --------------------------------interest:興味の選択ページ------------------------------------
+
 def interest(request):
     if request.method == 'POST':
         form = InterestForm(request.POST)
         if form.is_valid():
 
+            for field_name in ['adventure', 'nature', 'architecture', 'healing', 'instagram', 'girls', 'food', 'art']:
+                request.session['attribute'][field_name] =int(form.cleaned_data[field_name])
+
 # 入力内容に問題がなければ、次のページに飛ぶよ
-            return HttpResponseRedirect('/language/')
+            return redirect('photo:language')
     else:
         form = InterestForm()
     return render(request, 'interest.html', {'form': form})
 
 
-#----------------------------宗教、言語選択ページ---------------------------------
-def language(request):
-    if request.method == 'POST':
-        form = ReligionForm(request.POST)
-        if form.is_valid():
+#--------------------------------------言語選択ページ-----------------------------------------
 
-# 入力内容に問題がなければ、次のページに飛ぶよ
-            return HttpResponseRedirect('/religion/')
+def language(request):
+    # HTTPリクエストがPOSTだったら、
+    if request.method == 'POST':
+        # ユーザーが入力したデータがフォームに入る
+        form = ReligionForm(request.POST)
+        # もし入力内容がOKだったら
+        if form.is_valid():
+            # フォームで選んだ言語の情報をセッションに保存する
+            request.session['language'] = form.cleaned_data['language']
+            # 入力内容に問題がなければ、次のページに飛ぶよ
+            return redirect('photo:religion')
     else:
         form = ReligionForm()
     return render(request, 'language.html', {'form': form})
 
+#--------------------------------------宗教選択ページ--------------------------------------
 
-#----------------------------宗教選択ページ---------------------------------
 def religion(request):
     if request.method == 'POST':
         form = ReligionForm(request.POST)
         if form.is_valid():
+            # 宗教の情報をセッションに保存する
+            request.session['religion'] = form.cleaned_data['religion']
 
 # 入力内容に問題がなければ、次のページに飛ぶよ
-            return HttpResponseRedirect('/religion/')
+            return redirect('photo:recommend')
     else:
         form = ReligionForm()
     return render(request, 'religion.html', {'form': form})
 
 
-# # トップページ
-# class IndexView(TemplateView):
-
-#     template_name='index.html'
-
-
-# ユーザーの投稿ページ
-# @method_decorator(login_required,name='dispatch')
-# class CreatePhotoView(CreateView):
-
-#     form_class=PhotoPostForm
-#     template_name="post_photo.html"
-#     success_url=reverse_lazy('photo:post_done')
-
-#     def form_valid(self, form):
-#         postdata=form.save(commit=False)
-#         postdata.user=self.request.user
-#         postdata.save()
-#         return super().form_valid(form)
+#---------------------------------------------結果表示ページ--------------------------------------
+def recommend(request):
+    # 各ページに保存したセッションからデータを取ってくる
+    # 構文：request.session.get['セッション名']
+    attribute = request.session.get('attribute')
+    language = request.session.get('language')
+    religion = request.session.get('religion')
 
 
-# 写真投稿ページ
+
+    return render(request, 'recommend.html')
+
+
+# -----------------------------------------写真投稿ページ-------------------------------------------
 def create_photo_view(request):
     if request.method == 'POST':
 

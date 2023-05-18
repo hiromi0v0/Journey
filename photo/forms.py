@@ -29,7 +29,7 @@ class ReligionForm(forms.Form):
             ('caodaism', 'カオダイ教'),
             ('taoism', '道教'),
             ('mormonism', 'モルモン教'),
-            ('etcetera', 'その他'),
+            ('etcetera', 'その他・特になし'),
         ),)
 
     language=forms.fields.ChoiceField(
@@ -52,7 +52,7 @@ class ReligionForm(forms.Form):
             ('aymara', 'アイマラ語'),
             ('taiwanese', '台湾語'),
             ('hakka', '客家語'),
-            ('etcetera', 'その他'),
+            ('etcetera', 'その他・特になし'),
 
 
 
@@ -65,14 +65,15 @@ class ReligionForm(forms.Form):
 
 # 状況を選ぶフォーム
 class SituationForm(forms.Form):
-    JUDGE = (('zero', '0'),
-        ('one', '1'),
-        ('two', '2'),
-        ('three', '3'),
-        ('four', '4'),
-        ('five', '5'))
+# まず、0から5の段階のラジオボタンの内容を設定する
+    JUDGE = (('0', '0'),
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5'))
     
-    
+# RadioSelectはラジオボタンを表示させるためのもの。
     stress=forms.ChoiceField(label='ストレス度',choices=JUDGE,widget=forms.widgets.RadioSelect)
     happy=forms.ChoiceField(label='ハッピー度',choices=JUDGE,widget=forms.widgets.RadioSelect)
     energy=forms.ChoiceField(label='エネルギーがある',choices=JUDGE,widget=forms.widgets.RadioSelect)
@@ -80,14 +81,14 @@ class SituationForm(forms.Form):
     tired=forms.ChoiceField(label='疲労度',choices=JUDGE,widget=forms.widgets.RadioSelect)
 
 
-# 興味を選ぶフォーム
+# ------------------------------興味を選ぶフォーム
 class InterestForm(forms.Form):
     JUDGE = (('zero', '0'),
-        ('one', '1'),
-        ('two', '2'),
-        ('three', '3'),
-        ('four', '4'),
-        ('five', '5'))
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5'))
     
     adventure=forms.ChoiceField(label='冒険',choices=JUDGE,widget=forms.widgets.RadioSelect)
     nature=forms.ChoiceField(label='自然',choices=JUDGE,widget=forms.widgets.RadioSelect)
