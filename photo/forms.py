@@ -30,7 +30,16 @@ class ReligionForm(forms.Form):
             ('taoism', '道教'),
             ('mormonism', 'モルモン教'),
             ('etcetera', 'その他・特になし'),
-        ),)
+        ),
+
+        required=True,
+        widget=forms.widgets.Select
+    )
+
+
+
+
+class LanguageForm(forms.Form):
 
     language=forms.fields.ChoiceField(
         choices = (
@@ -74,27 +83,27 @@ class SituationForm(forms.Form):
         ('5', '5'))
     
 # RadioSelectはラジオボタンを表示させるためのもの。
-    stress=forms.ChoiceField(label='ストレス度',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    happy=forms.ChoiceField(label='ハッピー度',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    energy=forms.ChoiceField(label='エネルギーがある',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    astray=forms.ChoiceField(label='人生迷子度',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    tired=forms.ChoiceField(label='疲労度',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    stress=forms.ChoiceField(label='ストレス度',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    happy=forms.ChoiceField(label='ハッピー度',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    energy=forms.ChoiceField(label='エネルギーがある',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    astray=forms.ChoiceField(label='人生迷子度',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    tired=forms.ChoiceField(label='疲労度',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
 
 
 # ------------------------------興味を選ぶフォーム
 class InterestForm(forms.Form):
-    JUDGE = (('zero', '0'),
+    JUDGE = (('0', '0'),
         ('1', '1'),
         ('2', '2'),
         ('3', '3'),
         ('4', '4'),
         ('5', '5'))
     
-    adventure=forms.ChoiceField(label='冒険',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    nature=forms.ChoiceField(label='自然',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    architecture=forms.ChoiceField(label='建物',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    healing=forms.ChoiceField(label='癒し',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    instagram=forms.ChoiceField(label='インスタ映え',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    girls=forms.ChoiceField(label='女子旅',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    food=forms.ChoiceField(label='食事',choices=JUDGE,widget=forms.widgets.RadioSelect)
-    art=forms.ChoiceField(label='芸術',choices=JUDGE,widget=forms.widgets.RadioSelect)
+    adventure=forms.ChoiceField(label='冒険',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    nature=forms.ChoiceField(label='自然',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    architecture=forms.ChoiceField(label='建物',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    healing=forms.ChoiceField(label='癒し',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    instagram=forms.ChoiceField(label='インスタ映え',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    girls=forms.ChoiceField(label='女子旅',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    food=forms.ChoiceField(label='食事',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')
+    art=forms.ChoiceField(label='芸術',choices=JUDGE,widget=forms.widgets.RadioSelect, initial='0')

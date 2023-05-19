@@ -5,7 +5,7 @@ from django.views.generic import TemplateView,ListView,FormView
 # # 写真投稿ページ系
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .forms import PhotoPostForm,AttributeForm,SituationForm,InterestForm,ReligionForm
+from .forms import PhotoPostForm,AttributeForm,SituationForm,InterestForm,LanguageForm,ReligionForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 # # ------------トップページ写真投稿
@@ -35,25 +35,33 @@ class IndexView(TemplateView):
 
 # -----------------------------situation：状況の選択ページ---------------------------------
 def situation(request):
+# ➁➀でformを空にして、ユーザーに選択してもらう＝POST送信でデータが送られる。
+    # HTTPリクエストがPOSTだったら、
     if request.method == 'POST':
+        # ユーザーが入力したデータがフォームに入る
         form = SituationForm(request.POST)
 # もし入力内容がOKだったら
         if form.is_valid():
 
-
+            # request.session['attribute'] = []
 # 各項目のデータをセッションに保存する！
 # セッションにデータ（文字列・値）を入れる場合の構文：
 # request.session['セッション名'] = データ
-# まず、formの各項目をfor文でfield_nameに一つずつ入れて、セッションに保存する。
-            for field_name in ['stress', 'happy', 'energy', 'astray', 'tired']:
-                request.session['attribute'][field_name] = int(form.cleaned_data[field_name])
+# まず、formの各項目をfor文でsituation_fieldに一つずつ入れて、セッションに保存する。
+            for situation_field in ['stress', 'happy', 'energy', 'astray', 'tired']:
+                request.session['attribute'][situation_field] = int(form.cleaned_data[situation_field])
+            print(request.session.get('attribute'))
+                # request.session['attribute'].append(int(form.cleaned_data[situation_field]))
 # セッションの内容が保存できているかprintして確認する。
-            print(request.session['energy'])
+            # print(request.session['attribute'])
+            print(request.session['attribute']['energy'])
 
 # 入力内容に問題がなければ、次のページに飛ぶよ
             return redirect('photo:interest')
     else:
+# ➀get送信でデータが来た時(ユーザーが初めてページに遷移してきた時)に、Formを空にする
         form = SituationForm()
+        # {'form': form}は、{'happy': 1}みたいなデータが入っている。
     return render(request, 'situation.html', {'form': form})
 
 
@@ -64,8 +72,11 @@ def interest(request):
         form = InterestForm(request.POST)
         if form.is_valid():
 
-            for field_name in ['adventure', 'nature', 'architecture', 'healing', 'instagram', 'girls', 'food', 'art']:
-                request.session['attribute'][field_name] =int(form.cleaned_data[field_name])
+            for interest_field in ['adventure', 'nature', 'architecture', 'healing', 'instagram', 'girls', 'food', 'art']:
+                request.session['attribute'][interest_field] =int(form.cleaned_data[interest_field])
+                # request.session['attribute'].append(int(form.cleaned_data[interest_field]))
+            print(request.session.get('attribute'))
+            # print(request.session['attribute']['energy'])
 
 # 入力内容に問題がなければ、次のページに飛ぶよ
             return redirect('photo:language')
@@ -74,21 +85,23 @@ def interest(request):
     return render(request, 'interest.html', {'form': form})
 
 
-#--------------------------------------言語選択ページ-----------------------------------------
+#--------------------------------------LanguageForm:言語選択ページ-----------------------------------------
 
 def language(request):
     # HTTPリクエストがPOSTだったら、
     if request.method == 'POST':
         # ユーザーが入力したデータがフォームに入る
-        form = ReligionForm(request.POST)
+        form = LanguageForm(request.POST)
         # もし入力内容がOKだったら
         if form.is_valid():
             # フォームで選んだ言語の情報をセッションに保存する
             request.session['language'] = form.cleaned_data['language']
+            # print(request.session['attribute'])
+            print(request.session.get('language'))
             # 入力内容に問題がなければ、次のページに飛ぶよ
             return redirect('photo:religion')
     else:
-        form = ReligionForm()
+        form = LanguageForm()
     return render(request, 'language.html', {'form': form})
 
 #--------------------------------------宗教選択ページ--------------------------------------
@@ -110,14 +123,39 @@ def religion(request):
 #---------------------------------------------結果表示ページ--------------------------------------
 def recommend(request):
     # 各ページに保存したセッションからデータを取ってくる
-    # 構文：request.session.get['セッション名']
-    attribute = request.session.get('attribute')
-    language = request.session.get('language')
-    religion = request.session.get('religion')
+    # 構文：request.session.get('セッション名')をそれぞれの変数に入れている。
+    print(request.session.get('attribute'))
+    print(request.session['attribute'])
+    attribute_list = []
+    for value in request.session.get('attribute').values():
+        attribute_list.append(value)
+    print(attribute_list)
+    print(request.session.get('language'))
+    print(request.session.get('religion'))
+
+    attribute_session = request.session.get('attribute')
+    language_session = request.session.get('language')
+    religion_session = request.session.get('religion')
+
+# 各セッションの情報をsession_listに保存する。
+    # session_list = [attribute, language_session, religion_session]
+# ちゃんとデータが入っているか確認する。多分来てない。
+    # print(session_list)
+
+# Attributeのデータベースをすべて取得する＝投稿ページで登録されたhappy:1みたいな情報。
+# 変数名attribute_dbはAttributeのデータベース全部の情報が入っている。
+    attribute_db=Attribute.objects.all()
+
+# country_id毎の属性の合計値を出し、country_idの項目数で割る。
+    for attribute in attribute_db:
+
+
+        return render(request, 'recommend.html')
 
 
 
-    return render(request, 'recommend.html')
+
+
 
 
 # -----------------------------------------写真投稿ページ-------------------------------------------
