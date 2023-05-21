@@ -8,11 +8,11 @@
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
                 <h1 class="fw-light">Language</h1>
-                <p class="lead text-muted">興味のある言語を選んでください。</p>
+                <p class="lead text-muted">興味のある宗教を選んでください。</p>
 
-                <form method="post" action="{% url 'photo:religion' %}">
+                <form method="post" action="{% url 'photo:recommend' %}">
                     {% csrf_token %}
-                    {{ form }}
+                    {% for radio in form %}
                     <button type="submit" class="btn btn-primary btn-lg mb-2" name="{{ radio.name }}" value="{{ radio.choice_value }}" style="padding: 10px 20px;">
                         {{ radio.choice_label }}
                     </button>

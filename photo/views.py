@@ -42,6 +42,7 @@ def situation(request):
         form = SituationForm(request.POST)
 # もし入力内容がOKだったら
         if form.is_valid():
+            request.session['attribute'] = {}  # 辞書として初期化
 
             # request.session['attribute'] = []
 # 各項目のデータをセッションに保存する！
