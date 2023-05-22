@@ -8,16 +8,14 @@
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
                 <h1 class="fw-light">Recommend</h1>
-                <p class="lead text-muted">あなたにオススメの旅行先は、</p>
+                <p class="lead text-muted">
+                    あなたにおすすめの国は、<span style="font-size: 30px;">{{ nearest_country_obj.country_name }}</span>です。
+                </p>
+                <div style="display: flex; justify-content: center; margin: 0 -15px;">
+                    <img src="{{ nearest_country_obj.image.url }}" alt="{{ nearest_country_obj.country_name }} Image" style="max-width: 100%; height: auto;">
+                </div>
+                <p>{{ nearest_country_obj.comment }}</p>
 
-                <form method="post" action="{% url 'photo:recommend' %}">
-                    {% csrf_token %}
-                    {% for radio in form.religion %}
-                    <button type="submit" class="btn btn-primary btn-lg mb-2" name="{{ radio.name }}" value="{{ radio.choice_value }}" style="padding: 10px 20px;">
-                        {{ radio.choice_label }}
-                    </button>
-                    {% endfor %}
-                </form>
             </div>
         </div>
     </section>

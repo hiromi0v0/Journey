@@ -144,41 +144,36 @@ def religion(request):
 
 #------------------------------------------------結果表示ページ----------------------------------------------------
 def recommend(request):
-    # 各ページに保存したセッションからデータを取ってくる
-
-    print(request.session.get('attribute'))
-
-
-# 各セッションの情報をsession_listに保存する。
-    # attribute_list = []
-    # for value in request.session.get('attribute').values():
-    #     attribute_list.append(value)
 
 # ちゃんとデータが入っているか確認する。
     print("最後｜", request.session['attribute_list'])
     print(request.session.get('language'))
     print(request.session.get('religion'))
 
-    # 構文：request.session.get('セッション名')をそれぞれの変数に入れている。
+    # 各ページのセッション情報をそれぞれの変数に入れている。
+    # 構文：request.session.get('セッション名')
     attribute_list = request.session['attribute_list']
+    print("ホントに最後｜", attribute_list)
     language_session = request.session.get('language')
     religion_session = request.session.get('religion')
 
 
-# Attributeのデータベースをすべて取得する＝投稿ページで登録されたhappy:1みたいな情報。
-# 変数名attribute_dbはAttributeのデータベース全部の情報が入っている。
 
-# country_id毎の属性の合計値を出し、country_idの項目数で割る。
+    # countries_list辞書とcountries辞書を初期化
+    countries_list = {}
+    countries = {}
+    # Countryのデータベースすべてをfor文で一行ずつ変数countryに入れる。
+    for country in Country.objects.all():
+        # for文で取り出したcountryと、Attributeデータベースのcountry（modelsでForeignKeyで作った項目)が一緒だったら、各項目の平均値を出す。
+        countries_list = Attribute.objects.filter(country=country).aggregate(Avg("stress"),Avg("happy"),Avg("energy"),Avg("astray"),Avg("tired"),Avg("adventure"),Avg("nature"),Avg("architecture"),Avg("healing"),Avg("healing"),Avg("instagram"),Avg("girls"),Avg("food"),Avg("art"))
+        # countriesという名前の辞書は、インド等（Country DBのcountry_nameの列）をキーにしますよ。後から空の辞書[]に.appendで追加するよ。
+        countries[country.country_name] = []
+        # countries_list(happy等の平均値が入っている).values()メソッドは、の各要素の値を取得する。を変数valueに入れる
+        for value in countries_list.values():
+            # countries辞書に追加していく
+            countries[country.country_name].append(value)
 
-countries_list = {}
-countries = {}
-for country in Country.objects.all():
-    countries_list = Attribute.objects.filter(country=country).aggregate(Avg("stress"),Avg("happy"),Avg("energy"),Avg("astray"),Avg("tired"),Avg("adventure"),Avg("nature"),Avg("architecture"),Avg("healing"),Avg("healing"),Avg("instagram"),Avg("girls"),Avg("food"),Avg("art"))
-    countries[country.country_name] = []
-    for value in countries_list.values():
-        countries[country.country_name].append(value)
-print(countries)
-
+    print("カントリーズcountries｜",countries)
 
 
 
@@ -188,26 +183,28 @@ print(countries)
 
 # 最も近い属性の国を計算する
 # float('inf') 浮動小数点数の最大値（無限大）でmin_distanceを初期化
-min_distance = float('inf')
-nearest_country = ""
-for country, attributes in countries.items():
-    distance = 0
-    for i in range(10):
-        # ユーザの属性と国の属性の差（距離）をdistanceに足していく
-        distance += (attribute_list[i] - attributes[i]) ** 2
-    if distance < min_distance:
-        min_distance = distance
-        nearest_country = country
+    min_distance = float('inf')
+    nearest_country = ""
+    for country, attributes in countries.items():
+        distance = 0
+        for i in range(3):
+            # ユーザの属性と国の属性の差（距離）をdistanceに足していく
+            distance += (attribute_list[i] - attributes[i]) ** 2
+            print("距離確認中｜", attribute_list)
+            print("距離確認中attributes｜", attributes)
 
-# 結果を出力する
-print(f"おすすめの国は{nearest_country}です。")
+        if distance < min_distance:
+            min_distance = distance
+            nearest_country = country
 
+    # 結果を出力する
+    print(f"おすすめの国は、{nearest_country}です。")
 
-    # 結果をテンプレートに渡して表示する
-    return render(request, 'recommend.html', {'nearest_country': nearest_country})
+    # nearest_countryに一致する国の情報を取得する
+    nearest_country_obj = Country.objects.get(country_name=nearest_country)
 
-
-
+    # 結果と国の情報をテンプレートに渡して表示する
+    return render(request, 'recommend.html', {'nearest_country_obj': nearest_country_obj})
 
 
 
@@ -230,7 +227,7 @@ def create_photo_view(request):
             photo_post.user = request.user  # ユーザーを設定
             photo_post.save()
 
-            return redirect(to='/')
+            return redirect(to='photo:post_done')
 
     else:
         forms = (PhotoPostForm(), AttributeForm())
