@@ -10,6 +10,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 # # ------------トップページ写真投稿
 from .models import PhotoPost,Attribute,Country
+
+from django.db.models import Avg
 # # ------------詳細ページ
 from django.views.generic import DetailView,UpdateView
 # # ページを削除する
@@ -24,16 +26,13 @@ from django.views.generic import DetailView,UpdateView
 # from django.shortcuts import redirect
 
 
-# #################################################################################
-#                                 #クラス
-# #################################################################################
-# 診断トップページ
+# ---------------------------------------診断トップページ---------------------------------------------------------
 class IndexView(TemplateView):
 
     template_name='index.html'
 
 
-# -----------------------------situation：状況の選択ページ---------------------------------
+# ------------------------------------situation：状況の選択ページ--------------------------------------------------
 def situation(request):
 # ➁➀でformを空にして、ユーザーに選択してもらう＝POST送信でデータが送られる。
     # HTTPリクエストがPOSTだったら、
@@ -42,7 +41,7 @@ def situation(request):
         form = SituationForm(request.POST)
 # もし入力内容がOKだったら
         if form.is_valid():
-            request.session['attribute'] = {}  # 辞書として初期化
+            request.session['attribute'] = {}  # 辞書として初期化これ入れないとエラーになる...。
 
             # request.session['attribute'] = []
 # 各項目のデータをセッションに保存する！
@@ -66,7 +65,7 @@ def situation(request):
     return render(request, 'situation.html', {'form': form})
 
 
-# --------------------------------interest:興味の選択ページ------------------------------------
+# --------------------------------------interest:興味の選択ページ-------------------------------------------------
 
 def interest(request):
     if request.method == 'POST':
@@ -76,7 +75,14 @@ def interest(request):
             for interest_field in ['adventure', 'nature', 'architecture', 'healing', 'instagram', 'girls', 'food', 'art']:
                 request.session['attribute'][interest_field] =int(form.cleaned_data[interest_field])
                 # request.session['attribute'].append(int(form.cleaned_data[interest_field]))
-            print(request.session.get('attribute'))
+            print("interest後｜", request.session.get('attribute'))
+
+            attribute_list = []
+            for value in request.session.get('attribute').values():
+                attribute_list.append(value)
+            request.session['attribute_list'] = attribute_list
+            print(request.session['attribute_list'])
+            # request.session['attr'] = request.session.get('attribute')
             # print(request.session['attribute']['energy'])
 
 # 入力内容に問題がなければ、次のページに飛ぶよ
@@ -86,33 +92,48 @@ def interest(request):
     return render(request, 'interest.html', {'form': form})
 
 
-#--------------------------------------LanguageForm:言語選択ページ-----------------------------------------
-
+#--------------------------------------LanguageForm:言語選択ページ--------------------------------------------------
 def language(request):
+    # print("GET時言語選択前｜", request.session['attribute_list'])
     # HTTPリクエストがPOSTだったら、
     if request.method == 'POST':
         # ユーザーが入力したデータがフォームに入る
         form = LanguageForm(request.POST)
+        # print("POST直後｜", request.session['attribute_list'])
         # もし入力内容がOKだったら
         if form.is_valid():
             # フォームで選んだ言語の情報をセッションに保存する
+            language_value = form.cleaned_data['language']
+            # form.cleaned_data['language']はバリデートした後のデータが入る。
+            # ※はじかれたデータはcleaned_dataには入らない。
+            print(language_value)
             request.session['language'] = form.cleaned_data['language']
-            # print(request.session['attribute'])
-            print(request.session.get('language'))
+            # print("言語選択後｜", request.session.get('attribute'))
+
+            # print(request.session.get('language'))  # セッションの値を表示
+            # print(request.session.get('attribute'))
             # 入力内容に問題がなければ、次のページに飛ぶよ
             return redirect('photo:religion')
+        else:
+            # バリデーションエラーメッセージをプリント
+            print(form.errors.as_data())
     else:
         form = LanguageForm()
+
     return render(request, 'language.html', {'form': form})
 
-#--------------------------------------宗教選択ページ--------------------------------------
+
+#----------------------------------------------宗教選択ページ---------------------------------------------------
 
 def religion(request):
+    print(request.session.get('language'))
     if request.method == 'POST':
         form = ReligionForm(request.POST)
         if form.is_valid():
             # 宗教の情報をセッションに保存する
             request.session['religion'] = form.cleaned_data['religion']
+            # print("宗教選択後｜", request.session.get('attribute'))
+            print("POST直後｜", request.session['attribute_list'])
 
 # 入力内容に問題がなければ、次のページに飛ぶよ
             return redirect('photo:recommend')
@@ -121,38 +142,69 @@ def religion(request):
     return render(request, 'religion.html', {'form': form})
 
 
-#---------------------------------------------結果表示ページ--------------------------------------
+#------------------------------------------------結果表示ページ----------------------------------------------------
 def recommend(request):
     # 各ページに保存したセッションからデータを取ってくる
-    # 構文：request.session.get('セッション名')をそれぞれの変数に入れている。
+
     print(request.session.get('attribute'))
-    print(request.session['attribute'])
-    attribute_list = []
-    for value in request.session.get('attribute').values():
-        attribute_list.append(value)
-    print(attribute_list)
+
+
+# 各セッションの情報をsession_listに保存する。
+    # attribute_list = []
+    # for value in request.session.get('attribute').values():
+    #     attribute_list.append(value)
+
+# ちゃんとデータが入っているか確認する。
+    print("最後｜", request.session['attribute_list'])
     print(request.session.get('language'))
     print(request.session.get('religion'))
 
-    attribute_session = request.session.get('attribute')
+    # 構文：request.session.get('セッション名')をそれぞれの変数に入れている。
+    attribute_list = request.session['attribute_list']
     language_session = request.session.get('language')
     religion_session = request.session.get('religion')
 
-# 各セッションの情報をsession_listに保存する。
-    # session_list = [attribute, language_session, religion_session]
-# ちゃんとデータが入っているか確認する。多分来てない。
-    # print(session_list)
 
 # Attributeのデータベースをすべて取得する＝投稿ページで登録されたhappy:1みたいな情報。
 # 変数名attribute_dbはAttributeのデータベース全部の情報が入っている。
-    attribute_db=Attribute.objects.all()
 
 # country_id毎の属性の合計値を出し、country_idの項目数で割る。
-    for attribute in attribute_db:
+
+countries_list = {}
+countries = {}
+for country in Country.objects.all():
+    countries_list = Attribute.objects.filter(country=country).aggregate(Avg("stress"),Avg("happy"),Avg("energy"),Avg("astray"),Avg("tired"),Avg("adventure"),Avg("nature"),Avg("architecture"),Avg("healing"),Avg("healing"),Avg("instagram"),Avg("girls"),Avg("food"),Avg("art"))
+    countries[country.country_name] = []
+    for value in countries_list.values():
+        countries[country.country_name].append(value)
+print(countries)
 
 
-        return render(request, 'recommend.html')
 
+
+
+# float()関数=浮動小数点数(小数点を含む数値を表現する)
+# 引数としてinf（無限大）を使用する。
+
+# 最も近い属性の国を計算する
+# float('inf') 浮動小数点数の最大値（無限大）でmin_distanceを初期化
+min_distance = float('inf')
+nearest_country = ""
+for country, attributes in countries.items():
+    distance = 0
+    for i in range(10):
+        # ユーザの属性と国の属性の差（距離）をdistanceに足していく
+        distance += (attribute_list[i] - attributes[i]) ** 2
+    if distance < min_distance:
+        min_distance = distance
+        nearest_country = country
+
+# 結果を出力する
+print(f"おすすめの国は{nearest_country}です。")
+
+
+    # 結果をテンプレートに渡して表示する
+    return render(request, 'recommend.html', {'nearest_country': nearest_country})
 
 
 

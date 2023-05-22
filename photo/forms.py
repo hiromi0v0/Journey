@@ -17,32 +17,11 @@ class AttributeForm(ModelForm):
         fields=['stress','happy','energy','astray','tired','adventure','nature','architecture','healing','instagram','girls','food','art']
 
 
-class ReligionForm(forms.Form):
-
-    religion=forms.fields.ChoiceField(
-        choices = (
-            ('christian', 'キリスト教'),
-            ('hinduism', 'ヒンドゥー教'),
-            ('buddhism', '仏教'),
-            ('islam', 'イスラム教'),
-            ('judaism', 'ユダヤ教'),
-            ('caodaism', 'カオダイ教'),
-            ('taoism', '道教'),
-            ('mormonism', 'モルモン教'),
-            ('etcetera', 'その他・特になし'),
-        ),
-
-        required=True,
-        widget=forms.widgets.Select
-    )
-
-
 
 
 class LanguageForm(forms.Form):
-
-    language=forms.fields.ChoiceField(
-        choices = (
+    language = forms.ChoiceField(
+        choices=(
             ('english', '英語'),
             ('chinese', '中国語'),
             ('spanish', 'スペイン語'),
@@ -61,15 +40,36 @@ class LanguageForm(forms.Form):
             ('aymara', 'アイマラ語'),
             ('taiwanese', '台湾語'),
             ('hakka', '客家語'),
-            ('etcetera', 'その他・特になし'),
+            ('others', 'その他・特になし'),
+        ),
+        required=True,
+        widget=forms.widgets.Select
+    )
 
 
 
+
+class ReligionForm(forms.Form):
+
+    religion=forms.fields.ChoiceField(
+        choices = (
+            ('christian', 'キリスト教'),
+            ('hinduism', 'ヒンドゥー教'),
+            ('buddhism', '仏教'),
+            ('islam', 'イスラム教'),
+            ('judaism', 'ユダヤ教'),
+            ('caodaism', 'カオダイ教'),
+            ('taoism', '道教'),
+            ('mormonism', 'モルモン教'),
+            ('others', 'その他・特になし'),
         ),
 
         required=True,
         widget=forms.widgets.Select
     )
+
+
+
 
 
 # 状況を選ぶフォーム

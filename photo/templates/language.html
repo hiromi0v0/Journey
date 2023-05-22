@@ -8,15 +8,34 @@
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
                 <h1 class="fw-light">Language</h1>
-                <p class="lead text-muted">興味のある宗教を選んでください。</p>
+                <p class="lead text-muted">興味のある言語を選んでください。</p>
 
-                <form method="post" action="{% url 'photo:recommend' %}">
+            {# action=post送信で来た時に飛ぶurls。photo:religionにするとlanguageを通らない。 #}
+                <form method="POST" action="{% url 'photo:language' %}">
                     {% csrf_token %}
-                    {% for radio in form %}
-                    <button type="submit" class="btn btn-primary btn-lg mb-2" name="{{ radio.name }}" value="{{ radio.choice_value }}" style="padding: 10px 20px;">
-                        {{ radio.choice_label }}
-                    </button>
+                    {{form}}
+                    <input type="submit" class="btn btn-primary btn-lg mb-2" value="送信する">
+                    {% comment %}
+                    {% for choice in form.language %}
+
+                        {# {{ choice.choice_value }}はenglishなどのformsの値が入る #}
+                        <button type="submit" class="btn btn-primary btn-lg mb-2" name="language" value="{{ choice.choice_value }}" style="padding: 10px 20px;">
+
+
+                            {# 表示されるボタンの名前 #}
+                            {{ choice.choice_label }}
+                        </button>
                     {% endfor %}
+                    {% endcomment %}
+                    {% if form.errors %}
+                        <ul class="errorlist">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </form>
             </div>
         </div>
