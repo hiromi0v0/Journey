@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 # # ------------トップページ写真投稿
 from .models import PhotoPost,Attribute,Country
 
-from django.db.models import Avg
+from django.db.models import Avg,Q
 # # ------------詳細ページ
 from django.views.generic import DetailView,UpdateView
 # # ページを削除する
@@ -159,12 +159,23 @@ def recommend(request):
 
 
 
-    # countries_list辞書とcountries辞書を初期化
+    # countries_list辞書とcountries辞書とmatch_list辞書を初期化
     countries_list = {}
     countries = {}
+    match_list = {}
+
+
+
+    # 一件でも存在する＝
+    # 存在しない＝全件もってくる
+    # .firstは一件でもあれば
+    # 言語と宗教ページで取得したセッションに保存された値（language_sessionとreligion_session）がひとつでもCountryDBの言語1,2,3と宗教1,2,3に当てはまれば、
+    # 〇match_country=Country.objects.filter(Q(language_session=country.language1)|Q(language_session=country.language2)|Q(language_session=country.language3)).filter(Q(religion_session=country.religion1)|Q(religion_session=country.religion2)|Q(religion_session=country.religion3)).first
+    # もし、match_countryが存在する場合
+
     # Countryのデータベースすべてをfor文で一行ずつ変数countryに入れる。
     for country in Country.objects.all():
-        # for文で取り出したcountryと、Attributeデータベースのcountry（modelsでForeignKeyで作った項目)が一緒だったら、各項目の平均値を出す。
+                # for文で取り出したcountryと、Attributeデータベースのcountry（modelsでForeignKeyで作った項目)が一緒だったら、各項目の平均値を出す。
         countries_list = Attribute.objects.filter(country=country).aggregate(Avg("stress"),Avg("happy"),Avg("energy"),Avg("astray"),Avg("tired"),Avg("adventure"),Avg("nature"),Avg("architecture"),Avg("healing"),Avg("healing"),Avg("instagram"),Avg("girls"),Avg("food"),Avg("art"))
         # countriesという名前の辞書は、インド等（Country DBのcountry_nameの列）をキーにしますよ。後から空の辞書[]に.appendで追加するよ。
         countries[country.country_name] = []
@@ -173,8 +184,12 @@ def recommend(request):
             # countries辞書に追加していく
             countries[country.country_name].append(value)
 
-    print("カントリーズcountries｜",countries)
+        if language_session in[country.language1,country.language2,country.language3]:
+            if religion_session in[country.religion1,country.religion2,country.religion3]:
+                match_list = Attribute.objects.filter(country=country).aggregate(Avg("stress"),Avg("happy"),Avg("energy"),Avg("astray"),Avg("tired"),Avg("adventure"),Avg("nature"),Avg("architecture"),Avg("healing"),Avg("healing"),Avg("instagram"),Avg("girls"),Avg("food"),Avg("art"))
 
+
+    print("カントリーズcountries｜",countries)
 
 
 
@@ -187,8 +202,13 @@ def recommend(request):
     nearest_country = ""
     for country, attributes in countries.items():
         distance = 0
-        for i in range(3):
+        # もし200ヶ国ある場合は、データの検索が遅くなるのでCountryDBをカウントしたもの（国の件数）を、一旦変数countrynumberに入れる。
+        countrynumber=Country.objects.all().count()
+        # 何件あるかプリントする
+        print(countrynumber)
+        for i in range(countrynumber):
             # ユーザの属性と国の属性の差（距離）をdistanceに足していく
+            # マイナスになる可能性があるので、
             distance += (attribute_list[i] - attributes[i]) ** 2
             print("距離確認中｜", attribute_list)
             print("距離確認中attributes｜", attributes)
@@ -196,6 +216,7 @@ def recommend(request):
         if distance < min_distance:
             min_distance = distance
             nearest_country = country
+
 
     # 結果を出力する
     print(f"おすすめの国は、{nearest_country}です。")
@@ -240,16 +261,21 @@ def create_photo_view(request):
 
 
 
-
-
-
 @method_decorator(login_required,name='dispatch')
 class PostSuccessView(TemplateView):
     template_name='post_success.html'
 
-# # 写真投稿一覧表示
-class IndexView(ListView):
-    template_name='index.html'
+
+# ---------------------------------------写真投稿トップページ---------------------------------------------------------
+class PhotoIndexView(TemplateView):
+
+    template_name='photo_index.html'
+
+
+
+# ----------------------------------------写真投稿一覧表示-----------------------------------------------------------
+class PhotoIndexView(ListView):
+    template_name='photo_index.html'
     queryset=PhotoPost.objects.order_by('posted_at')
 
 

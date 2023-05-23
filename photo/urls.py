@@ -28,8 +28,8 @@ path('religion/', views.religion, name='religion'),
 path('recommend/',views.recommend,name='recommend'),
 
 
-    # photopostのトップページ
-    # path('',views.IndexView.as_view(),name='index'),
+    # 写真投稿のトップページ
+    path('photo_index',views.PhotoIndexView.as_view(),name='photo_index'),
     # Formを二つ作ったので、関数で書いた
     path('post/',views.create_photo_view,name='post'),
     path('post_done/',views.PostSuccessView.as_view(),name='post_done'),
