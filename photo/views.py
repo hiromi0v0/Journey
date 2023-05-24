@@ -168,13 +168,18 @@ def recommend(request):
 
     # 一件でも存在する＝
     # 存在しない＝全件もってくる
-    # .firstは一件でもあれば
     # 言語と宗教ページで取得したセッションに保存された値（language_sessionとreligion_session）がひとつでもCountryDBの言語1,2,3と宗教1,2,3に当てはまれば、
-    # 〇match_country=Country.objects.filter(Q(language_session=country.language1)|Q(language_session=country.language2)|Q(language_session=country.language3)).filter(Q(religion_session=country.religion1)|Q(religion_session=country.religion2)|Q(religion_session=country.religion3)).first
-    # もし、match_countryが存在する場合
+    match_country=Country.objects.filter(Q(language1=language_session)|Q(language2=language_session)|Q(language3=language_session)).filter(Q(religion1=religion_session)|Q(religion2=religion_session)|Q(religion3=religion_session))
+
+    print(match_country)
+    # もし、match_countryが存在しない場合
+    if match_country.count()==0:
+        # Countryデータベースの全件を元に診断結果を出しますよ
+        match_country=Country.objects.all()
+
 
     # Countryのデータベースすべてをfor文で一行ずつ変数countryに入れる。
-    for country in Country.objects.all():
+    for country in match_country:
                 # for文で取り出したcountryと、Attributeデータベースのcountry（modelsでForeignKeyで作った項目)が一緒だったら、各項目の平均値を出す。
         countries_list = Attribute.objects.filter(country=country).aggregate(Avg("stress"),Avg("happy"),Avg("energy"),Avg("astray"),Avg("tired"),Avg("adventure"),Avg("nature"),Avg("architecture"),Avg("healing"),Avg("healing"),Avg("instagram"),Avg("girls"),Avg("food"),Avg("art"))
         # countriesという名前の辞書は、インド等（Country DBのcountry_nameの列）をキーにしますよ。後から空の辞書[]に.appendで追加するよ。
@@ -184,9 +189,9 @@ def recommend(request):
             # countries辞書に追加していく
             countries[country.country_name].append(value)
 
-        if language_session in[country.language1,country.language2,country.language3]:
-            if religion_session in[country.religion1,country.religion2,country.religion3]:
-                match_list = Attribute.objects.filter(country=country).aggregate(Avg("stress"),Avg("happy"),Avg("energy"),Avg("astray"),Avg("tired"),Avg("adventure"),Avg("nature"),Avg("architecture"),Avg("healing"),Avg("healing"),Avg("instagram"),Avg("girls"),Avg("food"),Avg("art"))
+        # if language_session in[country.language1,country.language2,country.language3]:
+        #     if religion_session in[country.religion1,country.religion2,country.religion3]:
+        #         match_list = Attribute.objects.filter(country=country).aggregate(Avg("stress"),Avg("happy"),Avg("energy"),Avg("astray"),Avg("tired"),Avg("adventure"),Avg("nature"),Avg("architecture"),Avg("healing"),Avg("healing"),Avg("instagram"),Avg("girls"),Avg("food"),Avg("art"))
 
 
     print("カントリーズcountries｜",countries)
