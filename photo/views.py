@@ -159,19 +159,19 @@ def recommend(request):
 
 
 
-    # countries_list辞書とcountries辞書とmatch_list辞書を初期化
+    # countries_list辞書とcountries辞書を初期化
     countries_list = {}
     countries = {}
     match_list = {}
 
 
 
-    # 一件でも存在する＝
     # 存在しない＝全件もってくる
     # 言語と宗教ページで取得したセッションに保存された値（language_sessionとreligion_session）がひとつでもCountryDBの言語1,2,3と宗教1,2,3に当てはまれば、
-    match_country=Country.objects.filter(Q(language1=language_session)|Q(language2=language_session)|Q(language3=language_session)).filter(Q(religion1=religion_session)|Q(religion2=religion_session)|Q(religion3=religion_session))
+    # match_country=Country.objects.filter(Q(language1=language_session)|Q(language2=language_session)|Q(language3=language_session)).filter(Q(religion1=religion_session)|Q(religion2=religion_session)|Q(religion3=religion_session))
+    match_country=Country.objects.filter(Q(language1=language_session) | Q(language2=language_session) | Q(language3=language_session) | Q(religion1=religion_session) | Q(religion2=religion_session) | Q(religion3=religion_session))
 
-    print(match_country)
+    print("マッチカントリー｜",match_country)
     # もし、match_countryが存在しない場合
     if match_country.count()==0:
         # Countryデータベースの全件を元に診断結果を出しますよ
@@ -234,6 +234,12 @@ def recommend(request):
 
 
 
+# ---------------------------------------写真投稿トップページ---------------------------------------------------------
+class PhotoIndexView(TemplateView):
+
+    template_name='photo_index.html'
+
+
 # -----------------------------------------写真投稿ページ-------------------------------------------
 def create_photo_view(request):
     if request.method == 'POST':
@@ -271,17 +277,13 @@ class PostSuccessView(TemplateView):
     template_name='post_success.html'
 
 
-# ---------------------------------------写真投稿トップページ---------------------------------------------------------
-class PhotoIndexView(TemplateView):
-
-    template_name='photo_index.html'
 
 
 
 # ----------------------------------------写真投稿一覧表示-----------------------------------------------------------
 class PhotoIndexView(ListView):
     template_name='photo_index.html'
-    queryset=PhotoPost.objects.order_by('posted_at')
+    queryset=PhotoPost.objects.order_by('-posted_at')
 
 
 # ページネーション

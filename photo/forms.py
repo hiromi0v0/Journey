@@ -22,12 +22,13 @@ class AttributeForm(ModelForm):
 class LanguageForm(forms.Form):
     language = forms.ChoiceField(
         choices=(
+            ('others', '特になし・その他'),
             ('英語', '英語'),
             ('中国語', '中国語'),
             ('スペイン語', 'スペイン語'),
             ('アラビア語', 'アラビア語'),
             ('フランス語', 'フランス語'),
-            ('ヒンドゥー語', 'ヒンドゥー語'),
+            ('ヒンディー語', 'ヒンディー語'),
             ('ウズベク語', 'ウズベク語'),
             ('ベトナム語', 'ベトナム語'),
             ('ロシア語', 'ロシア語'),
@@ -40,7 +41,6 @@ class LanguageForm(forms.Form):
             ('アイマラ語', 'アイマラ語'),
             ('台湾語', '台湾語'),
             ('客家語', '客家語'),
-            ('others', 'その他・特になし'),
         ),
         required=True,
         widget=forms.widgets.Select
@@ -53,6 +53,7 @@ class ReligionForm(forms.Form):
 
     religion=forms.fields.ChoiceField(
         choices = (
+            ('others', '特になし・その他'),
             ('キリスト教', 'キリスト教'),
             ('ヒンドゥー教', 'ヒンドゥー教'),
             ('仏教', '仏教'),
@@ -61,7 +62,6 @@ class ReligionForm(forms.Form):
             ('カオダイ教', 'カオダイ教'),
             ('道教', '道教'),
             ('モルモン教', 'モルモン教'),
-            ('others', 'その他・特になし'),
         ),
 
         required=True,

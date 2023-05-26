@@ -14,6 +14,7 @@
                 <div style="display: flex; justify-content: center; margin: 0 -15px;">
                     <img src="{{ nearest_country_obj.image.url }}" alt="{{ nearest_country_obj.country_name }} Image" style="height: 570px;">
                 </div>
+                <br>
                 <p style="text-align: left; margin-left: 0; padding-left: 0;">{{ nearest_country_obj.comment }}</p>
                 <div style="margin-top: 20px;">
                     {{ nearest_country_obj.map|safe }}
@@ -21,11 +22,11 @@
             </div>
         </div>
         <div class="row py-lg-5">
-            <div class="col text-center">
-                <form action="/photo_index.html">
-                    <button type="submit" class="btn btn-primary btn-lg">みんなの投稿を見てみましょう！</button>
-                </form>
-            </div>
+                <div class="col text-center">
+                    <form action="{% url 'photo:photo_index' %}">
+                        <input type="submit" class="btn btn-primary btn-lg" value="みんなの投稿を見てみましょう！">
+                    </form>
+                </div>
         </div>
     </section>
 </main>

@@ -14,7 +14,7 @@
                 <form method="POST" action="{% url 'photo:language' %}">
                     {% csrf_token %}
                     {{form}}
-                    <input type="submit" class="btn btn-primary btn-lg mb-2" value="送信する">
+                    <input type="submit" class="btn btn-primary btn-lg mb-2" value="次のページへ">
                     {% comment %}
                     {% for choice in form.language %}
 
