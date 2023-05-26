@@ -18,9 +18,9 @@
             <div class="d-flex justify-content-between align-items-center">
               <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-outline-secondary">
-                <a href='{% url 'photo:photo_detail' record.pk %}'>View</button></a>
-                <button type="button" class="btn btn-sm btn-outline-secondary"
-                onclick="location.href='{% url 'photo:photos_cat' record.country.id %}'">{{record.country.title}}</button>
+                <a href="{% url 'photo:photo_detail' record.pk %}">View</button></a>
+                <button type="button" class="btn btn-sm btn-outline-secondary">
+                <a href="{% url 'photo:photos_cat' record.country.id %}">{{record.country.country_name}}</button></a>
               </div>
               <a href="{% url 'photo:user_list' record.user.id %}">
               <small class="text-muted">{{record.user.username}}</small>

@@ -15,7 +15,7 @@ from django.db.models import Avg,Q
 # # ------------詳細ページ
 from django.views.generic import DetailView,UpdateView
 # # ページを削除する
-# from django.views.generic import DeleteView
+from django.views.generic import DeleteView
 
 # # 関数用ページネーション
 # from django.core.paginator import Paginator
@@ -289,8 +289,9 @@ class PhotoIndexView(ListView):
 # ページネーション
     paginate_by=9
 
+# トップページのユーザー名ボタンを押したら、該当のユーザーの投稿だけ出てくる設定
 class CountryView(ListView):
-    template_name='index.html'
+    template_name='photo_index.html'
     paginate_by=9
 
     def get_queryset(self):
@@ -299,9 +300,9 @@ class CountryView(ListView):
 
         return countrys
 
-
+# トップページの国名ボタンを押したら、該当の国の投稿だけ出てくる設定
 class UserView(ListView):
-    template_name='index.html'
+    template_name='photo_index.html'
     paginate_by=9
 
     def get_queryset(self):
@@ -312,10 +313,10 @@ class UserView(ListView):
         return user_list
 
 
-# # ------------詳細ページ作成
+# 詳細ページ作成
 class DetailView(DetailView):
     template_name='detail.html'
-    model=PhotoPost,
+    model=PhotoPost
 
 # # マイページを用意する
 
@@ -325,22 +326,22 @@ class MypageView(ListView):
 
     def get_queryset(self):
         queryset=PhotoPost.objects.filter(user=self.request.user).order_by('posted_at')
-
         return queryset
 
-# # ページを削除する
-# class PhotoDeleteView(DeleteView):
-#     model=PhotoPost
-#     template_name='photo_delete.html'
-#     success_url=reverse_lazy('photo:mypage')
 
-# # ページを更新する
-# @method_decorator(login_required,name='dispatch')
-# class PhotoUpdateView(UpdateView):
-#     model=PhotoPost
-#     form_class=PhotoPostForm
-#     template_name='photo_update.html'
-#     success_url=reverse_lazy('photo:post_done')
+# ページを削除する
+class PhotoDeleteView(DeleteView):
+    model=PhotoPost
+    template_name='photo_delete.html'
+    success_url=reverse_lazy('photo:mypage')
+
+# ページを更新する
+@method_decorator(login_required,name='dispatch')
+class PhotoUpdateView(UpdateView):
+    model=PhotoPost
+    form_class=PhotoPostForm
+    template_name='photo_update.html'
+    success_url=reverse_lazy('photo:post_done')
 
 # ######################################################################################
 #                                   #  関数

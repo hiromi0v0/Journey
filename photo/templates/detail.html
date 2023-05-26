@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Photo Detail{% endblock %}
+
+{% block contents %}
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col offset-2 offset-md-2">
+            <h2>{{ object.title }}</h2>
+
+            <h5 class="text-end ms-auto">{{ object.country }}</h5>
+            <p>{{ object.comment }}</p>
+            <br>
+
+            <p>{{ object.posted_at }}に投稿</p>
+            <p><img src="{{ object.image1.url }}" width="700"></p>
+
+            {% if object.image2 %}
+            <p><img src="{{ object.image2.url }}" width="700"></p>
+            {% endif %}
+
+            {% if object.image3 %}
+            <p><img src="{{ object.image3.url }}" width="700"></p>
+            {% endif %}
+
+            {% if object.image4 %}
+            <p><img src="{{ object.image4.url }}" width="700"></p>
+            {% endif %}
+
+            <p>おすすめ旅行日数：{{ object.days1 }}～{{ object.days2 }}日間</p>
+            <p>おすすめの旅行時期：{{ object.season1 }}～{{ object.season2 }}月</p>
+
+
+
+
+            {% if request.user == object.user %}
+            <a href="{% url 'photo:photo_delete' object.pk %}" class="btn btn-primary my-2">削除する</a>
+            <a href="{% url 'photo:photo_update' object.pk %}" class="btn btn-primary my-2">変更する</a>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
