@@ -7,36 +7,53 @@
 <div class="container">
     <div class="row">
         <div class="col offset-2 offset-md-2">
-            <h2>{{ object.title }}</h2>
+            <h2>{{ photopost.title }}</h2>
 
-            <h5 class="text-end ms-auto">{{ object.country }}</h5>
-            <p>{{ object.comment }}</p>
+            <h5 class="text-end ms-auto">{{ photopost.country }}</h5>
+            <p>{{ photopost.comment }}</p>
             <br>
 
-            <p>{{ object.posted_at }}に投稿</p>
-            <p><img src="{{ object.image1.url }}" width="700"></p>
+            <p>{{ photopost.posted_at }}に投稿</p>
+            <p><img src="{{ photopost.image1.url }}" width="700"></p>
 
-            {% if object.image2 %}
-            <p><img src="{{ object.image2.url }}" width="700"></p>
+            {% if photopost.image2 %}
+            <p><img src="{{ photopost.image2.url }}" width="700"></p>
             {% endif %}
 
-            {% if object.image3 %}
-            <p><img src="{{ object.image3.url }}" width="700"></p>
+            {% if photopost.image3 %}
+            <p><img src="{{ photopost.image3.url }}" width="700"></p>
             {% endif %}
 
-            {% if object.image4 %}
-            <p><img src="{{ object.image4.url }}" width="700"></p>
+            {% if photopost.image4 %}
+            <p><img src="{{ photopost.image4.url }}" width="700"></p>
             {% endif %}
 
-            <p>おすすめ旅行日数：{{ object.days1 }}～{{ object.days2 }}日間</p>
-            <p>おすすめの旅行時期：{{ object.season1 }}～{{ object.season2 }}月</p>
+            <h5>Situation～状況～</h5>
+            <p>ストレス度：{{ photopost.attribute.stress }}</p>
+            <p>ハッピー度：{{ photopost.attribute.stress }}</p>
+            <p>エネルギー度：{{ photopost.attribute.stress }}</p>
+            <p>人生迷子度：{{ photopost.attribute.stress }}</p>
+            <p>疲労度：{{ photopost.attribute.stress }}</p>
+
+            <h5>Interest～興味～</h5>
+            <p>冒険：{{ photopost.attribute.adventure }}</p>
+            <p>自然：{{ photopost.attribute.nature }}</p>
+            <p>建築物：{{ photopost.attribute.architecture }}</p>
+            <p>癒し：{{ photopost.attribute.healing }}</p>
+            <p>インスタ映え：{{ photopost.attribute.instagram }}</p>
+            <p>女子旅：{{ photopost.attribute.girls }}</p>
+            <p>食事：{{ photopost.attribute.food }}</p>
+            <p>芸術：{{ photopost.attribute.art }}</p>
+            <h5>おすすめ旅行日数：{{ photopost.days1 }}～{{ photopost.days2 }}日間</h5>
+            <h5>おすすめの旅行時期：{{ photopost.season1 }}～{{ photopost.season2 }}月</h5>
+            {# <h5>言語：{{ photopost.country.language1 }} {{ photopost.country.language2 }} {{ photopost.country.language3 }}</h5> #}
 
 
 
 
-            {% if request.user == object.user %}
-            <a href="{% url 'photo:photo_delete' object.pk %}" class="btn btn-primary my-2">削除する</a>
-            <a href="{% url 'photo:photo_update' object.pk %}" class="btn btn-primary my-2">変更する</a>
+            {% if request.user == photopost.user %}
+            <a href="{% url 'photo:photo_delete' photopost.pk %}" class="btn btn-primary my-2">削除する</a>
+            <a href="{% url 'photo:photo_update' photopost.pk %}" class="btn btn-primary my-2">変更する</a>
             {% endif %}
 
         </div>

@@ -313,10 +313,20 @@ class UserView(ListView):
         return user_list
 
 
-# 詳細ページ作成
-class DetailView(DetailView):
-    template_name='detail.html'
-    model=PhotoPost
+# 詳細ページ作成。3つのDBモデルをhtmlで表示させたいので関数で作成
+# class DetailView(DetailView):
+#     template_name='detail.html'
+#     model=PhotoPost
+# views.py
+
+def detail(request, pk):
+    photopost = PhotoPost.objects.get(pk=pk)
+    countries = Country.objects.all()
+    attributes = Attribute.objects.all()
+    return render(request, 'detail.html', {'photopost': photopost, 'countries': countries, 'attributes': attributes})
+
+
+
 
 # # マイページを用意する
 
@@ -342,217 +352,4 @@ class PhotoUpdateView(UpdateView):
     form_class=PhotoPostForm
     template_name='photo_update.html'
     success_url=reverse_lazy('photo:post_done')
-
-# ######################################################################################
-#                                   #  関数
-# ######################################################################################
-
-# # # トップページ表示
-# # # ページを表示する関数は必ずrequestがいる
-# # def index_view(request):
-
-
-# # # 一覧データ取得
-# # # PhotoPostのDB一覧を降順？でquerysetの中に入れる。
-# # # ＤＢから沢山データを持てくる時は基本的にquerysetっていう名前の変数を使う。
-# # # PhotoPostっていうデータベースから、ojjectsの検索を使って抽出する。順番（order_by）は、投稿日時の降順('-posted_at')ですよ
-# #     queryset=PhotoPost.objects.order_by('-posted_at')
-
-
-
-# # ページネーション。
-# # 一ページに９件の記事を表示させるよ。
-#     # paginator=Paginator(queryset,9)
-
-#     # request.GETはDjangoの機能で、http:のリクエスト?以降のもの情報をゲットできる！
-#     # http:wwwwww?page=2とかだったら、2が取れるよ。
-#     # get()はrequest.GETだと謎の数字をURLに直接入力されちゃうとエラーになるので設定している。
-#     # get('page',1)とすると、pageがある時はpageを、ないときは1を取ってくるよって意味。
-
-#     # page_number=request.GET.get('page',1)
-
-#     # page_obj=paginator.page(page_number)
-# # pages=get_django_pagination(queryset,)
-
-# # querysetをcontextに入れるよ。でも、
-# # photos_list.htmlの中で、{% for record in object_list %}ってobject_listじゃないと受け取らないよって言ってるし、
-# # pagination.htmlで、{%if page_obj.has_previous%}ってpage_objじゃないと受け取らないよって言ってるので、
-# # まず、querysetをそれぞれ'object_list'と'page_obj'に入れるよ。
-# # しかも第三引数は一単語？じゃないといけないので、さらに二つをcontextに入れるよ。
-#     # context = {'object_list': queryset,
-#             #    'page_obj':queryset}
-
-
-
-
-# # 答え（return）を出すときに第一引数は、request固定。第二引数はtemplateであるhtml。第三引数はcontext（任意）データ。って決まっている。
-# # contextにはデータベース操作をして取得したデータなどを格納します。
-# # renderはデータベースのデータなどを反映させたHTMLページを作成して、HTTPレスポンスとしてブラウザに返す役割があるよ。
-#     # return render(request,'index.html',context)
-
-
-
-# ######################################################################################
-#                                   #  関数
-# ######################################################################################
-
-
-# # -------------------------------# トップページ表示 関数-------------------------------
-# # ページを表示する関数は必ずrequestがいる。ページに関するものだけ。
-# def index_view(request):
-
-
-# # 一覧データ取得
-# # データベースPhotoPost一覧を降順？でquerysetの中に入れる。
-# # querysetは名前何でもいい。クラスに合わせてquerysetにした。
-#     queryset=PhotoPost.objects.order_by('-posted_at')
-
-
-# # ページネーション。わからないので保留
-# # pages=get_django_pagination(queryset,)
-
-# # Paginatorクラスを使って、全データを１ページ当たり９記事表示させるようにする。
-#     paginator=Paginator(queryset,9)
-
-# # request.GETでget送信されたURLから?以下の情報を取得。https:aaaaaaa?page=2だったら、2を持ってくる。
-
-# # 'page'はpagination.htmlで<a class="page-link" href="?page={{num}}">{{num}}</a>。って自分で指定しましたよ。
-# # だから値が取れる。
-# # getはURLに謎の数字
-
-#     page_number=request.GET.get('page',1)
-
-# # pagesは、1ページあたり9記事のページのデータが入っている。
-# # paginator（1ページあたり9記事）.page(page_number)で今いるページのNoを出すっ！
-# # メソッド.page(page_number)より.get_page(page_number)
-#     pages=paginator.page(page_number)
-
-#     # ページを表示させるための、
-# # photos_list.htmlの中で、{% for record in object_list %}ってobject_listじゃないと受け取らないよって言ってるし、
-# # pagination.htmlで、{%if page_obj.has_previous%}ってpage_objじゃないと受け取らないよって言ってるので、
-# # pagesをそれぞれ、'object_list'と'page_obj'に入れる。
-# # しかも第三引数は一単語？じゃないといけないので、さらに二つをcontextに入れる。
-#     context = {'object_list': pages,
-#                'page_obj':pages}
-# # 第一引数は、request。第二引数はhtml。第三引数は表示したいデータ。って決まっている。
-#     return render(request,'index.html',context)
-
-
-# # ---------------------------------# カテゴリ一覧表示 関数---------------------------------
-
-# # ページを表示する関数は必ずrequestがいる
-# # Urlsからcategoryっていうキー（４）とかで送られてくる。Pythonの関数復習
-# def category_view(request,category):
-
-#     # 一覧データ取得
-# # PhotoPostのDB一覧を降順？でquerysetの中に入れる。
-# # カテゴリーだけ抽出してquerysetへ入れる。
-# # (category(Photopostデータベースの項目名)=category(値。urls.pyから持ってきたid。キー（４。)
-#     queryset=PhotoPost.objects.filter(category=category).order_by('-posted_at')
-#     paginator=Paginator(queryset,9)
-#     page_number=request.GET.get('page',1)
-#     # paginator（1ページあたり9記事）.page(page_number)で今いるページのNoを出す！
-#     pages=paginator.page(page_number)
-
-#     info_name=get_object_or_404(Category,id=category).title
-
-#     context = {'object_list': pages,
-#                'page_obj':pages,
-#                'info_name':info_name,
-#                }
-
-#     # 第一引数は、request。第二引数はhtml。第三引数は表示したいデータ。って決まっている。
-
-#     return render(request,'index.html',context)
-
-
-# # -----------------------------------# ユーザー一覧表示 関数-----------------------------------
-# # ページを表示する関数は必ずrequestがいる
-# def user_view(request,user):
-
-#     # 一覧データ取得
-
-#     queryset=PhotoPost.objects.filter(user=user).order_by('-posted_at')
-# # ページネーション
-#     paginator=Paginator(queryset,9)
-#     page_number=request.GET.get('page',1)
-#     pages=paginator.page(page_number)
-#     # get_object_or_404はDjandoのデフォルト
-#     # info_name=get_object_or_404(CostomUser,id=user).username
-
-#     context = {'object_list': pages,
-#                'page_obj':pages,
-#             #    'info_name':info_name
-#             }
-
-#     # 第一引数は、request。第二引数はhtml。第三引数は表示したいデータ。って決まっている。
-#     return render(request,'index.html',context)
-
-
-
-# # # ------------------------------------# マイページ 関数-------------------------------------
-# @login_required(login_url='/login/')
-# def mypage_view(request):
-
-#     # 一覧データ取得。request.userで、ログインしているユーザーを抽出する。
-#     # request.userにselfはいらない。selfはクラス用だから今回はいらない。
-#     queryset=PhotoPost.objects.filter(user=request.user).order_by('-posted_at')
-
-# # レコードの数を.coount()でカウント
-#     # record_count=queryset.coount()
-
-# # ページネーション
-#     paginator=Paginator(queryset,9)
-#     page_number=request.GET.get('page',1)
-#     pages=paginator.page(page_number)
-#     # contextのデータがhtmlに送られる
-#     context = {'object_list': pages,
-#                'page_obj':pages,
-#                'queryset':queryset}
-
-#     return render(request,'mypage.html',context)
-
-
-# # --------------------------------------# 記事投稿 関数---------------------------------------
-# # # ログインしている場合
-# @login_required(login_url='/login/')
-# def createPhoto_view(request):
-
-
-# # # GETの時（一番最初にページを開いたとき＝フォームに何も入っていない時）
-#     if request.methood == 'GET':
-# #     # PhotoPostForm()空のフォームだよ。
-#         form=PhotoPostForm()
-# # # POSTの時(フォームに色々と入力して投稿ボタンをおした時)
-# # # 送信データを押すと、基本的にrequest.POSTにすべてのデータが入る（DBにはまだ入ってないよ）
-# # # request.POST['name']とかで取りだせる。
-# # # 送信データを押すと、添付ファイルはrequest.FILESにデータが入る。
-# # # （バリデーションが通らなくても空にならない。）
-#     else:
-#         form=PhotoPostForm(request.POST,request.FILES)
-# #         # バリエーションが通った時
-#         if form.is_valid():
-# #             # フォームのデータを仮保存
-#             poatdata=form.save(commit=False)
-# #             # userの情報を足す
-#             poatdata.user=request.user
-# #             # そして全部まとめて保存。ここで次のページに行く。
-#             postdata.save()
-# # redirectの機能をimportした。
-#             return redirect('photo:post_done')
-
-
-# #         # 送信データ
-#         context={'form':form}
-#         return render(request,'post_photo.html,context')
-
-
-# # # 記事詳細
-# # def detailPhoto_view(request,photo_id):
-
-# #     # 詳細データ
-# #     object=get_object_or_404(PhotoPost,id=photo_id)
-# #     # 送信データ
-# #     # 1レコード分をobjectに入れて
-# #     context={'object':object}
 
